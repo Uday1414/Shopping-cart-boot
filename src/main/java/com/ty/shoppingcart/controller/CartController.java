@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ty.shoppingcart.dto.Cart;
 import com.ty.shoppingcart.dto.Item;
-import com.ty.shoppingcart.dto.Product;
 import com.ty.shoppingcart.dto.ResponseStructure;
 import com.ty.shoppingcart.service.CartService;
 

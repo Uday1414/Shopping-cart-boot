@@ -6,11 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.ty.shoppingcart.dao.AdminDao;
 import com.ty.shoppingcart.dao.MerchantDao;
+import com.ty.shoppingcart.dao.ProductDao;
 import com.ty.shoppingcart.dto.Admin;
 import com.ty.shoppingcart.dto.Merchant;
+import com.ty.shoppingcart.dto.Product;
 import com.ty.shoppingcart.dto.ResponseStructure;
 import com.ty.shoppingcart.exception.InvalidCredentialsException;
 import com.ty.shoppingcart.exception.NoIdFoundException;
@@ -21,6 +24,8 @@ public class AdminService {
 	AdminDao adminDao;
 	@Autowired 
 	MerchantDao merchantDao;
+	@Autowired
+	ProductDao productDao;
 
 	public ResponseStructure<Admin> saveAdmin(Admin admin) {
 		ResponseStructure<Admin> responseStructure = new ResponseStructure<Admin>();
@@ -116,5 +121,24 @@ public class AdminService {
 		}
 		return responseStructure;
 	}
-
+	
+	public ResponseStructure<Merchant> removeMerchant(int id){
+		ResponseStructure<Merchant> responseStructure = new ResponseStructure<Merchant>();
+		Merchant merchant = merchantDao.getMerchant(id);
+		merchant.setStatus("removed");
+		List<Product> products = merchant.getProduct();
+		for(Product p : products) {
+			p.setStatus("unavailable");
+			productDao.updateProduct(p.getId(), p);
+		}
+		Merchant merchant1 = merchantDao.updateMerchant(merchant.getId(), merchant);
+		if (merchant1 != null) {
+			responseStructure.setData(merchant1);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("Approved");
+		} else {
+			throw new NoIdFoundException("no Merchant Found");
+		}
+		return responseStructure;
+	}
 }

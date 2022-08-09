@@ -99,21 +99,21 @@ public class CartService {
 		return responseStructure;
 	}
 
-	public ResponseStructure<Cart> addProduct(Item i,int cid, int pid) {
+	public ResponseStructure<Cart> addProduct(Item i, int cid, int pid) {
 		ResponseStructure<Cart> responseStructure = new ResponseStructure<Cart>();
 		Customer customer = customerDao.getCustomer(cid);
 		Cart cart = customer.getCart();
 		Product product = productDao.getProduct(pid);
-		if(cart!=null) {
+		if (cart != null) {
 			List<Item> items = cart.getItems();
 			i.setProduct_name(product.getProduct_name());
 			i.setBrand(product.getBrand());
-			i.setCost(i.getQuantity()*product.getCost());
+			i.setCost(i.getQuantity() * product.getCost());
 			i.setType(product.getType());
 			i.setMerchant(product.getMerchant());
 			i.setStatus("booked");
 			int a = product.getQuantity();
-			a-=i.getQuantity();
+			a -= i.getQuantity();
 			product.setQuantity(a);
 			productDao.updateProduct(pid, product);
 			items.add(i);
@@ -126,36 +126,41 @@ public class CartService {
 			} else {
 				throw new NoIdFoundException();
 			}
-		}else {
+		} else {
 			Cart cart2 = new Cart();
 			cartDao.saveCart(cart2);
 			customer.setCart(cart2);
-			Customer customer2=customerDao.updateCustomer(cid, customer);
-			Cart cart3=customer2.getCart();
+			Customer customer2 = customerDao.updateCustomer(cid, customer);
+			Cart cart3 = customer2.getCart();
 			List<Item> items = new ArrayList<>();
 			i.setProduct_name(product.getProduct_name());
 			i.setBrand(product.getBrand());
-			i.setCost(i.getQuantity()*product.getCost());
+			i.setCost(i.getQuantity() * product.getCost());
 			i.setType(product.getType());
 			i.setMerchant(product.getMerchant());
 			i.setStatus("booked");
 			int a = product.getQuantity();
-			a-=i.getQuantity();
-			product.setQuantity(a);
-			productDao.updateProduct(pid, product);
-			items.add(i);
-			itemDao.saveItem(i);
-			cart3.setItems(items);
-			Cart cart1 = cartDao.updateCart(cart3.getId(), cart3);
-			if (cart1 != null) {
-				responseStructure.setData(cart1);
-				responseStructure.setStatusCode(HttpStatus.CREATED.value());
-				responseStructure.setMessage("Updated");
-			} else {
-				throw new NoIdFoundException();
+			int b = i.getQuantity();
+			if (b <= a) {
+				a -= b;
+				product.setQuantity(a);
+				productDao.updateProduct(pid, product);
+				items.add(i);
+				itemDao.saveItem(i);
+				cart3.setItems(items);
+				Cart cart1 = cartDao.updateCart(cart3.getId(), cart3);
+				if (cart1 != null) {
+					responseStructure.setData(cart1);
+					responseStructure.setStatusCode(HttpStatus.CREATED.value());
+					responseStructure.setMessage("Updated");
+				} else {
+					throw new NoIdFoundException("Not Found");
+				}
+			}else {
+				throw new NoIdFoundException("Quantity is less");
 			}
 		}
-		
+
 		return responseStructure;
 	}
 

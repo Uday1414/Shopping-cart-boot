@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,4 +28,6 @@ public class Product {
 	@ManyToOne
 	@JoinColumn(name = "my_merchant")
 	private Merchant merchant;
+	
+	
 }

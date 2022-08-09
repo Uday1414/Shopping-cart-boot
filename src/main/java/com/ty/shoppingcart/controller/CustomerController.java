@@ -80,5 +80,29 @@ public class CustomerController {
 	public ResponseStructure<List<Product>> viewAllProducts(){
 		return customerService.viewAllProducts();
 	}
-
+	
+	@GetMapping("/customers/products/view/brand/{brand}")
+	public ResponseStructure<List<Product>> viewProductByBrand(@PathVariable String brand){
+		return customerService.viewProductByBrand(brand);
+	}
+	
+	@GetMapping("/customers/products/view/type/{type}")
+	public ResponseStructure<List<Product>> viewProductByType(@PathVariable String type){
+		return customerService.viewProductByType(type);
+	}
+	
+	@GetMapping("/customers/products/view/name/{name}")
+	public ResponseStructure<List<Product>> viewProductByName(@PathVariable String name){
+		return customerService.viewProductByName(name);
+	}
+	
+	@GetMapping("/customers/products/view/cost/{cost}")
+	public ResponseStructure<List<Product>> viewProductByCost(@PathVariable double cost){
+		return customerService.viewProductByCost(cost);
+	}
+	
+	@GetMapping("/customers/products/view/cost/{low}/{high}")
+	public ResponseStructure<List<Product>> viewProductByCostRange(@PathVariable double low ,@PathVariable double high ){
+		return customerService.viewProductByCostRange(low, high);
+	}
 }

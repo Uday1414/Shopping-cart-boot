@@ -17,7 +17,6 @@ import com.ty.shoppingcart.dto.Cart;
 import com.ty.shoppingcart.dto.Customer;
 import com.ty.shoppingcart.dto.Item;
 import com.ty.shoppingcart.dto.Order;
-import com.ty.shoppingcart.dto.Product;
 import com.ty.shoppingcart.dto.ResponseStructure;
 import com.ty.shoppingcart.exception.NoIdFoundException;
 

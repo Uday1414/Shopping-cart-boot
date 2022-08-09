@@ -46,4 +46,9 @@ public class ProductController {
 	public ResponseStructure<String> deleteProduct(@PathVariable int id) {
 		return productService.deleteProduct(id);
 	}
+	
+	@PutMapping("/products/quantity/{pid}/{mid}/{quantity}")
+	public ResponseStructure<Product> addProductQuantity(@PathVariable int pid,@PathVariable int mid,@PathVariable int quantity){
+		return productService.addProductQuantity(pid, mid, quantity);
+	}
 }

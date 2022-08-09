@@ -12,13 +12,13 @@ import com.ty.shoppingcart.dao.AddressDao;
 import com.ty.shoppingcart.dao.CustomerDao;
 import com.ty.shoppingcart.dao.ProductDao;
 import com.ty.shoppingcart.dto.Address;
-import com.ty.shoppingcart.dto.Cart;
 import com.ty.shoppingcart.dto.Customer;
 import com.ty.shoppingcart.dto.Product;
 import com.ty.shoppingcart.dto.ResponseStructure;
 import com.ty.shoppingcart.dto.WishList;
 import com.ty.shoppingcart.exception.InvalidCredentialsException;
 import com.ty.shoppingcart.exception.NoIdFoundException;
+import com.ty.shoppingcart.repository.ProductRepository;
 
 @Service
 public class CustomerService {
@@ -29,7 +29,8 @@ public class CustomerService {
 	AddressDao addressDao;
 	@Autowired
 	ProductDao productDao;
-
+	@Autowired
+	ProductRepository productRepository;
 	@Autowired
 	MailSenderService mailSenderService;
 
@@ -134,7 +135,7 @@ public class CustomerService {
 	
 	public ResponseStructure<List<Product>> viewAllProducts(){
 		ResponseStructure<List<Product>> responseStructure = new ResponseStructure<List<Product>>();
-		List<Product> products = productDao.getAllProduct().stream().filter(p->p.getQuantity()>0).collect(Collectors.toList());
+		List<Product> products = productDao.getAllProduct().stream().filter(p->p.getStatus().equalsIgnoreCase("available")).collect(Collectors.toList());
 		if (products.size()>0) {
 			responseStructure.setData(products);
 			responseStructure.setStatusCode(HttpStatus.CREATED.value());
@@ -144,5 +145,69 @@ public class CustomerService {
 		}
 		return responseStructure;
 	}
-
+	
+	public ResponseStructure<List<Product>> viewProductByBrand(String brand){
+		ResponseStructure<List<Product>> responseStructure = new ResponseStructure<List<Product>>();
+		List<Product> products = productDao.getAllProduct().stream().filter(p->p.getBrand().equalsIgnoreCase(brand)).collect(Collectors.toList());
+		if (products.size()>0) {
+			responseStructure.setData(products);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("All Available Products By Product Brand");
+		} else {
+			throw new InvalidCredentialsException("No Products Found");
+		}
+		return responseStructure;
+	}
+	
+	public ResponseStructure<List<Product>> viewProductByName(String name){
+		ResponseStructure<List<Product>> responseStructure = new ResponseStructure<List<Product>>();
+		List<Product> products = productDao.getAllProduct().stream().filter(p->p.getProduct_name().equalsIgnoreCase(name)).collect(Collectors.toList());
+		if (products.size()>0) {
+			responseStructure.setData(products);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("All Available Products By Product Name");
+		} else {
+			throw new InvalidCredentialsException("No Products Found");
+		}
+		return responseStructure;
+	}
+	
+	public ResponseStructure<List<Product>> viewProductByType(String type){
+		ResponseStructure<List<Product>> responseStructure = new ResponseStructure<List<Product>>();
+		List<Product> products = productDao.getAllProduct().stream().filter(p->p.getType().equalsIgnoreCase(type)).collect(Collectors.toList());
+		if (products.size()>0) {
+			responseStructure.setData(products);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("All Available Products By Product Type");
+		} else {
+			throw new InvalidCredentialsException("No Products Found");
+		}
+		return responseStructure;
+	}
+	
+	public ResponseStructure<List<Product>> viewProductByCost(double cost){
+		ResponseStructure<List<Product>> responseStructure = new ResponseStructure<List<Product>>();
+		List<Product> products = productDao.getAllProduct().stream().filter(p->p.getCost()<=cost).collect(Collectors.toList());
+		if (products.size()>0) {
+			responseStructure.setData(products);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("All Available Products Below The Given Cost");
+		} else {
+			throw new InvalidCredentialsException("No Products Found");
+		}
+		return responseStructure;
+	}
+	
+	public ResponseStructure<List<Product>> viewProductByCostRange(double low , double high ){
+		ResponseStructure<List<Product>> responseStructure = new ResponseStructure<List<Product>>();
+		List<Product> products = productRepository.getProductsByCost(low, high);
+		if (products.size()>0) {
+			responseStructure.setData(products);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("All Available Products Below The Given Cost");
+		} else {
+			throw new InvalidCredentialsException("No Products Found");
+		}
+		return responseStructure;
+	}
 }

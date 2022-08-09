@@ -64,5 +64,10 @@ public class AdminController {
 	public ResponseStructure<Merchant> approveMerchant(@PathVariable int id){
 		return adminService.approveMerchant(id);
 	}
+	
+	@PutMapping("/admins/merchants/remove/{id}")
+	public ResponseStructure<Merchant> removeMerchant(@PathVariable int id){
+		return adminService.removeMerchant(id);
+	}
 
 }

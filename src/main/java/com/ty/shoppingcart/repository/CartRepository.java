@@ -1,7 +1,6 @@
 package com.ty.shoppingcart.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import com.ty.shoppingcart.dto.Cart;
 

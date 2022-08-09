@@ -40,6 +40,28 @@ public class ProductService {
 		return responseStructure;
 
 	}
+	
+	public ResponseStructure<Product> addProductQuantity(int pid, int mid,int quantity) {
+		ResponseStructure<Product> responseStructure = new ResponseStructure<Product>();
+		Product product = productDao.getProduct(pid);
+		if(product.getMerchant().getId()==mid) {
+		int a = product.getQuantity();
+		a+=quantity;
+		product.setQuantity(a);
+		Product product2 = productDao.updateProduct(pid, product);
+		if (product2 != null) {
+			responseStructure.setData(product2);
+			responseStructure.setStatusCode(HttpStatus.CREATED.value());
+			responseStructure.setMessage("Success");
+		} else {
+			throw new NoIdFoundException("Not Saved");
+		}
+		}else {
+			throw new NoIdFoundException("Merchant is not Approved to add product");
+		}
+		return responseStructure;
+
+	}
 
 	public ResponseStructure<Product> getProduct(int id) {
 
